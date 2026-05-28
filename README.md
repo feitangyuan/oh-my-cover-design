@@ -1,8 +1,45 @@
-# Oh My Cover Design
+# cover-xiaohongshu
 
-把文章扔给 agent，它读完内容、问你几个问题，然后输出一段可以直接跑图的封面提示词。标题自动帮你想，构图逻辑全内置好了。
+小红书封面生成 Skill。唤醒词：**小红书封面**。
+
+把文章扔给 agent，它读完内容、问你几个问题，然后输出一段可以直接跑图的小红书封面提示词，或在 Codex 中调用图片生成能力直接生成小红书封面图。标题自动帮你想，构图逻辑、质量判断和迭代规则都内置好了。
 
 支持 Claude Code、Codex，以及任何支持自定义 skill 的 AI agent。
+
+---
+
+## 三种模式
+
+| 模式 | 用途 |
+|------|------|
+| prompt_mode | 只生成封面提示词，拿去给图片模型跑图 |
+| image_mode | 生成提示词后，在 Codex 中直接调用图片生成能力出封面图 |
+| production_mode | 面向发布场景，优先生成无字底图，再用确定性排版叠加清晰中文标题 |
+
+---
+
+## 持久进化
+
+这个 Skill 支持持久进化，但不会每次生成都直接改写 `SKILL.md`。
+
+默认节奏：
+
+```text
+每次生成 → 输出本轮记忆
+用户要求记录/复盘/升级 → 写入 memory/
+多次重复 → 进入 rule-candidates
+规律稳定 → 晋升到 references
+核心流程变化 → 再升级 SKILL.md
+```
+
+相关文件：
+
+```text
+references/evolution-policy.md
+memory/evolution-log.md
+memory/rule-candidates.md
+memory/deprecated-rules.md
+```
 
 ---
 
@@ -31,7 +68,22 @@
 
 选哪种构图风格、有没有人脸参考图、人物表情、有没有产品截图要放进去、背景色调、字体……
 
-问完，输出提示词，拿去跑图。不需要懂设计，不需要自己写提示词。
+问完，输出提示词或直接生成封面图。不需要懂设计，不需要自己写提示词。
+
+也可以直接给结构化参数：
+
+```yaml
+article: "文章内容..."
+platform: "xiaohongshu"
+mode: "image_mode"
+style: "auto"
+title: ""
+person:
+  description: "年轻女性，科技博主气质"
+assets:
+  - "产品界面截图"
+emotion: "好奇"
+```
 
 ---
 
@@ -55,16 +107,16 @@
 ## 安装
 
 ```bash
-git clone https://github.com/feitangyuan/oh-my-cover-design.git \
-  ~/.claude/skills/cover-design-open
+git clone https://github.com/hongfamonvAI/oh-my-cover-design.git \
+  ~/.claude/skills/cover-xiaohongshu
 ```
 
 只想要 SKILL.md：
 
 ```bash
-mkdir -p ~/.claude/skills/cover-design-open
-curl -o ~/.claude/skills/cover-design-open/SKILL.md \
-  https://raw.githubusercontent.com/feitangyuan/oh-my-cover-design/main/SKILL.md
+mkdir -p ~/.claude/skills/cover-xiaohongshu
+curl -o ~/.claude/skills/cover-xiaohongshu/SKILL.md \
+  https://raw.githubusercontent.com/hongfamonvAI/oh-my-cover-design/main/SKILL.md
 ```
 
 ---
